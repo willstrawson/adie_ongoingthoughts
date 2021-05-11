@@ -14,19 +14,28 @@ rename = convert.convert_dict(os.path.join(dataloc, conversion_file))
 # get all file paths to .tsvs 
 files_to_conv = glob.glob(os.path.join(dataloc, 'sub-*/ses-*/sub-*_scans.tsv'))
 
-# open and read in files
+print('Files to be converted:','\n',files_to_conv)
+
+# open and read in files, one per participant 
 for fl in files_to_conv:
-    f = open(fl)
+    fin = open(fl)
     # save all lines as string in list 
-    l = f.readlines()
+    l = fin.readlines()    
+    # open output file 
+    fout = open(fl, "wt", sep='\t')
+    # loop through each line (entry in list) and replace CISC with ADIE ID 
+    for line in l:
+        # this function should return both cisc and adie id if found in string 
+        newid, oldid = convert.idmatch(str(l), rename)
+        print('OLD LINE = ', line)
+        line = line.replace(oldid, newid)
+        print('NEW LINE = ', line)
+        # fout
+        fout.write(line)
+    # close file
+    fin.close()
+    fout.close()
 
-
-# identify and save lines containing names 
-oneid, twoid = convert.idmatch(str(l), rename) # this function should return both cisc and adie id if found in string 
-print (oneid,twoid)
-# replace cisc names wth ADIE names 
-
-# save files 
 
 
 
